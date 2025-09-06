@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Memories - My Life Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    College Memories
+                </h1>
+                <p class="app-subtitle">Preserving precious moments from your college journey</p>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="gallery">
+                <i class="fas fa-images"></i>
+                Gallery
+            </button>
+            <button class="nav-tab" data-tab="upload">
+                <i class="fas fa-cloud-upload-alt"></i>
+                Upload
+            </button>
+            <button class="nav-tab" data-tab="search">
+                <i class="fas fa-search"></i>
+                Search
+            </button>
+            <button class="nav-tab" data-tab="share">
+                <i class="fas fa-share-alt"></i>
+                Share
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Gallery Tab -->
+            <div class="tab-content active" id="gallery">
+                <div class="gallery-controls">
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="photos">Photos</button>
+                        <button class="filter-btn" data-filter="videos">Videos</button>
+                    </div>
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="grid">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button class="view-btn" data-view="list">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="memories-grid" id="memoriesGrid">
+                    <!-- Memories will be dynamically added here -->
+                </div>
+
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-camera"></i>
+                    <h3>No memories yet</h3>
+                    <p>Start uploading your college photos and videos to create your memory gallery!</p>
+                    <button class="btn-primary" onclick="switchTab('upload')">
+                        <i class="fas fa-plus"></i>
+                        Add Your First Memory
+                    </button>
+                </div>
+            </div>
+
+            <!-- Upload Tab -->
+            <div class="tab-content" id="upload">
+                <div class="upload-container">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h3>Drop files here or click to browse</h3>
+                            <p>Support for photos (JPG, PNG, GIF) and videos (MP4, MOV, AVI)</p>
+                            <input type="file" id="fileInput" multiple accept="image/*,video/*" hidden>
+                            <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                                Choose Files
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="upload-form" id="uploadForm" style="display: none;">
+                        <h3>Add Memory Details</h3>
+                        <div class="form-group">
+                            <label for="memoryTitle">Title</label>
+                            <input type="text" id="memoryTitle" placeholder="Enter a memorable title...">
+                        </div>
+                        <div class="form-group">
+                            <label for="memoryDescription">Description</label>
+                            <textarea id="memoryDescription" placeholder="Tell us about this moment..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="memoryCategory">Category</label>
+                            <select id="memoryCategory">
+                                <option value="general">General</option>
+                                <option value="friends">Friends</option>
+                                <option value="events">Events</option>
+                                <option value="studies">Studies</option>
+                                <option value="sports">Sports</option>
+                                <option value="graduation">Graduation</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="memoryDate">Date</label>
+                            <input type="date" id="memoryDate">
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-secondary" onclick="cancelUpload()">Cancel</button>
+                            <button class="btn-primary" onclick="saveMemory()">Save Memory</button>
+                        </div>
+                    </div>
+
+                    <div class="upload-preview" id="uploadPreview"></div>
+                </div>
+            </div>
+
+            <!-- Search Tab -->
+            <div class="tab-content" id="search">
+                <div class="search-container">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search your memories...">
+                    </div>
+                    <div class="search-filters">
+                        <select id="categoryFilter">
+                            <option value="">All Categories</option>
+                            <option value="general">General</option>
+                            <option value="friends">Friends</option>
+                            <option value="events">Events</option>
+                            <option value="studies">Studies</option>
+                            <option value="sports">Sports</option>
+                            <option value="graduation">Graduation</option>
+                        </select>
+                        <input type="date" id="dateFilter" placeholder="Filter by date">
+                    </div>
+                    <div class="search-results" id="searchResults">
+                        <!-- Search results will be displayed here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Share Tab -->
+            <div class="tab-content" id="share">
+                <div class="share-container">
+                    <div class="share-section">
+                        <h3><i class="fas fa-download"></i> Import Memories from Friends</h3>
+                        <p>Your friends can export their memories and share them with you. Import their files here to add them to your collection.</p>
+                        
+                        <div class="import-area" id="importArea">
+                            <div class="import-content">
+                                <i class="fas fa-file-import"></i>
+                                <h4>Drop memory files here or click to browse</h4>
+                                <p>Select .json files exported from College Memories app</p>
+                                <input type="file" id="importInput" accept=".json" hidden>
+                                <button class="btn-primary" onclick="document.getElementById('importInput').click()">
+                                    <i class="fas fa-folder-open"></i>
+                                    Choose Memory Files
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="import-preview" id="importPreview" style="display: none;">
+                            <h4>Memories to Import:</h4>
+                            <div class="import-list" id="importList"></div>
+                            <div class="import-actions">
+                                <button class="btn-secondary" onclick="cancelImport()">Cancel</button>
+                                <button class="btn-primary" onclick="confirmImport()">
+                                    <i class="fas fa-plus"></i>
+                                    Import Memories
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="share-section">
+                        <h3><i class="fas fa-upload"></i> Export Your Memories</h3>
+                        <p>Export your memories to share with friends. They can import these files into their own College Memories app.</p>
+                        
+                        <div class="export-options">
+                            <div class="export-option">
+                                <h4>Export All Memories</h4>
+                                <p>Export your entire memory collection</p>
+                                <button class="btn-primary" onclick="exportAllMemories()">
+                                    <i class="fas fa-download"></i>
+                                    Export All
+                                </button>
+                            </div>
+                            
+                            <div class="export-option">
+                                <h4>Export by Category</h4>
+                                <p>Export memories from specific categories</p>
+                                <select id="exportCategory">
+                                    <option value="all">All Categories</option>
+                                    <option value="general">General</option>
+                                    <option value="friends">Friends</option>
+                                    <option value="events">Events</option>
+                                    <option value="studies">Studies</option>
+                                    <option value="sports">Sports</option>
+                                    <option value="graduation">Graduation</option>
+                                </select>
+                                <button class="btn-primary" onclick="exportByCategory()">
+                                    <i class="fas fa-download"></i>
+                                    Export Category
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="share-section">
+                        <h3><i class="fas fa-info-circle"></i> How to Share with Friends</h3>
+                        <div class="instructions">
+                            <div class="instruction-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Export Your Memories</h4>
+                                    <p>Use the export options above to create a .json file with your memories</p>
+                                </div>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Share the File</h4>
+                                    <p>Send the .json file to your friends via email, messaging, or file sharing</p>
+                                </div>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Friends Import</h4>
+                                    <p>Your friends can import the file using the import feature above</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Memory Modal -->
+    <div class="modal" id="memoryModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="modal-body" id="modalBody">
+                <!-- Memory details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content delete-modal">
+            <div class="modal-header">
+                <h3>Delete Memory</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this memory? This action cannot be undone.</p>
+                <div class="delete-preview" id="deletePreview">
+                    <!-- Preview of memory to be deleted -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn-danger" onclick="confirmDelete()">Delete Memory</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
